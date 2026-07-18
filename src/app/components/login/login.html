@@ -1,0 +1,46 @@
+<div class="bg-light d-flex align-items-center justify-content-center vh-100">
+  <div class="col-md-4 col-sm-8 px-3"> <div class="card shadow-lg border-0 border-top border-success border-4 rounded-3">
+    <div class="card-body p-5 text-center">
+
+      <div class="mb-4">
+        <i class="bi text-success fs-1"></i>
+        <h4 class="fw-bold text-dark mt-2">المركز الوطني للإعلامية</h4>
+        <p class="text-muted small">وحدة التكوين و الرسكلة</p>
+        <p class="text-muted small">المتصرف في المنظومة</p>
+      </div>
+
+      <form (ngSubmit)="seConnecter()">
+
+        <div class="mb-3 text-right">
+          <label class="form-label fw-bold text-secondary">اسم المستخدم (Identifiant)</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white border-start-0 text-muted"><i class="bi bi-person"></i></span>
+            <input type="text" [(ngModel)]="username" name="username" class="form-control bg-light border-end-0" required>
+          </div>
+        </div>
+
+        <div class="mb-4 text-right">
+          <label class="form-label fw-bold text-secondary">كلمة العبور (Mot de passe)</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white border-start-0 text-muted"><i class="bi bi-key"></i></span>
+            <input type="password" [(ngModel)]="password" name="password" class="form-control bg-light border-end-0" required>
+          </div>
+        </div>
+
+        @if (erreurMessage) {
+          <div class="alert alert-danger py-2 small rounded-pill mb-3 shadow-sm" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ erreurMessage }}
+          </div>
+        }
+
+        <button type="submit" class="btn btn-success btn-lg w-100 rounded-pill fw-bold shadow-sm py-2">
+          تسجيل الدخول <i class="bi bi-box-arrow-in-right ms-2"></i>
+        </button>
+
+      </form>
+
+    </div>
+  </div>
+
+  </div>
+</div>

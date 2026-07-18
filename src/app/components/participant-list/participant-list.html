@@ -1,0 +1,161 @@
+<div class="container py-4" dir="rtl">
+  <div class="row">
+    <div class="col-lg-12 mx-auto">
+
+      <div class="card shadow-sm border-0 mb-4 bg-white p-3">
+        <h6 class="fw-bold text-secondary mb-3"><i class="bi bi-search me-2"></i> البحث</h6>
+        <div class="row g-3 align-items-end">
+
+          <div class="col-md-4 text-end">
+            <label class="form-label small fw-bold text-muted">الموضوع / Thème</label>
+            <input type="text" [(ngModel)]="criteresRecherche.theme" class="form-control form-control-sm" placeholder="مثال: Angular, Spring...">
+          </div>
+
+          <div class="col-md-3 text-end">
+            <label class="form-label small fw-bold text-muted">تاريخ البدء</label>
+            <input type="date" [(ngModel)]="criteresRecherche.dateDebut" class="form-control form-control-sm">
+          </div>
+
+          <div class="col-md-3 text-end">
+            <label class="form-label small fw-bold text-muted">رقم القاعة</label>
+            <input type="number" [(ngModel)]="criteresRecherche.numSalle" class="form-control form-control-sm" placeholder="رقم القاعة">
+          </div>
+
+          <div class="col-md-2">
+            <button (click)="reinitialiserFiltres()" class="btn btn-outline-secondary btn-sm w-100 rounded-pill">
+              <i class="bi bi-arrow-clockwise"></i> Supprimer les filtres
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center py-3">
+          <h5 class="mb-0 fw-bold"><i class="bi bi-people-fill me-2"></i> قائمة المشاركين</h5>
+          <button (click)="ouvrirAjout()" class="btn btn-light btn-sm rounded-pill fw-bold text-success px-3">
+            <i class="bi bi-plus-lg"></i> إضافة مشارك جديد
+          </button>
+        </div>
+
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 text-center">
+              <thead class="table-light text-secondary">
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">الإسم واللقب</th>
+                <th scope="col">بطاقة التعريف (CIN)</th>
+                <th scope="col">المؤسسة / الشركة</th>
+                <th scope="col">الموضوع (Thème)</th>
+                <th scope="col">تاريخ البدء</th>
+                <th scope="col">رقم القاعة</th>
+                <th scope="col">الهاتف الجوال</th>
+                <th scope="col">الإجراءات</th>
+              </tr>
+              </thead>
+              <tbody>
+                @for (p of participantsFiltres; track p.id; let i = $index) {
+                  <tr>
+                    <td class="fw-bold text-muted">{{ i + 1 }}</td>
+                    <td class="fw-bold text-dark">{{ p.nom_prenom }}</td>
+                    <td><span class="badge bg-light text-dark border">{{ p.cin }}</span></td>
+                    <td>{{ p.entreprise }}</td>
+                    <td class="text-primary fw-bold">{{ p.theme_part }}</td>
+                    <td><span class="badge bg-light text-secondary border">{{ p.date_debut }}</span></td>
+                    <td><span class="badge bg-success-subtle text-success">قاعة {{ p.num_salle }}</span></td>
+
+                    <td>{{ p.tel_port }}</td>
+                    <td>
+                      <button (click)="ouvrirModification(p)" class="btn btn-outline-primary btn-sm rounded-pill me-1">
+                        <i class="bi bi-pencil"></i> تحيين
+                      </button>
+                      <button (click)="supprimer(p.id)" class="btn btn-outline-danger btn-sm rounded-pill">
+                        <i class="bi bi-trash"></i> حذف
+                      </button>
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="9" class="text-muted py-4">لا يوجد أي مشاركين يطابقون البحث حالياً</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+@if (isFormulaireOuvert) {
+  <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);" dir="rtl">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+
+        <div class="modal-header bg-dark text-white text-end d-flex justify-content-between w-100">
+          <h5 class="modal-title fw-bold">
+            {{ participantSelectionne.id ? 'تحيين معطيات مشارك' : 'إضافة مشارك جديد' }}
+          </h5>
+          <button (click)="isFormulaireOuvert = false" type="button" class="btn-close btn-close-white m-0"></button>
+        </div>
+
+        <div class="modal-body p-4">
+          <form (ngSubmit)="enregistrer()">
+            <div class="row g-3 text-end">
+              <div class="col-md-6">
+                <label class="form-label fw-bold">الإسم و اللقب</label>
+                <input type="text" [(ngModel)]="participantSelectionne.nom_prenom" name="nom" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">بطاقة التعريف الوطنية</label>
+                <input type="number" [(ngModel)]="participantSelectionne.cin" name="cin" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">المؤسسة</label>
+                <input type="text" [(ngModel)]="participantSelectionne.entreprise" name="entreprise" class="form-control">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">البريد الإلكتروني</label>
+                <input type="email" [(ngModel)]="participantSelectionne.mail" name="mail" class="form-control text-start" dir="ltr">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-bold">الهاتف الجوال</label>
+                <input type="number" [(ngModel)]="participantSelectionne.tel_port" name="port" class="form-control">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-bold">الهاتف القار</label>
+                <input type="number" [(ngModel)]="participantSelectionne.tel_fix" name="fix" class="form-control">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-bold">الفاكس</label>
+                <input type="text" [(ngModel)]="participantSelectionne.fax" name="fax" class="form-control">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-bold text-success">موضوع التدريب (Thème)</label>
+                <input type="text" [(ngModel)]="participantSelectionne.theme_part" name="theme_part" class="form-control" placeholder="مثال: Angular" required>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-bold text-success">تاريخ البدء</label>
+                <input type="date" [(ngModel)]="participantSelectionne.date_debut" name="date_debut" class="form-control" required>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-bold text-success">رقم القاعة</label>
+                <input type="number" [(ngModel)]="participantSelectionne.num_salle" name="num_salle" class="form-control" required>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+              <button type="button" (click)="isFormulaireOuvert = false" class="btn btn-light rounded-pill px-4">إلغاء</button>
+              <button type="submit" class="btn btn-success rounded-pill px-5 fw-bold">حفظ التغييرات</button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+}
