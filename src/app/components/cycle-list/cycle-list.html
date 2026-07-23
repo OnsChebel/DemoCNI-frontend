@@ -1,6 +1,44 @@
-<div class="container py-4">
+<div class="container py-4" dir="rtl">
   <div class="row">
     <div class="col-lg-12 mx-auto">
+
+      <div class="card shadow-sm border-0 mb-4 bg-white p-3">
+        <h6 class="fw-bold text-secondary mb-3"><i class="bi bi-search me-2"></i> البحث عن دورة</h6>
+        <div class="row g-3 align-items-end">
+
+          <div class="col-md-3 text-end">
+            <label class="form-label small fw-bold text-muted">الموضوع / المحور</label>
+            <input type="text" [(ngModel)]="criteresRecherche.theme" class="form-control form-control-sm">
+          </div>
+
+          <div class="col-md-2 text-end">
+            <label class="form-label small fw-bold text-muted">تاريخ البداية</label>
+            <input type="date" [(ngModel)]="criteresRecherche.dateDeb" class="form-control form-control-sm">
+          </div>
+
+          <div class="col-md-2 text-end">
+            <label class="form-label small fw-bold text-muted">تاريخ النهاية</label>
+            <input type="date" [(ngModel)]="criteresRecherche.dateFin" class="form-control form-control-sm">
+          </div>
+
+          <div class="col-md-2 text-end">
+            <label class="form-label small fw-bold text-muted">المكونون</label>
+            <input type="text" [(ngModel)]="criteresRecherche.formateur" class="form-control form-control-sm">
+          </div>
+
+          <div class="col-md-1 text-end">
+            <label class="form-label small fw-bold text-muted">رقم القاعة</label>
+            <input type="number" [(ngModel)]="criteresRecherche.numSalle" class="form-control form-control-sm">
+          </div>
+
+          <div class="col-md-2">
+            <button (click)="reinitialiserFiltres()" class="btn btn-outline-secondary btn-sm w-100 rounded-pill">
+              <i class="bi bi-arrow-clockwise"></i>Supprimer les filtres
+            </button>
+          </div>
+
+        </div>
+      </div>
 
       <div class="card shadow-sm border-0">
         <div class="card-header bg-success text-white d-flex justify-content-between align-items-center py-3">
@@ -26,7 +64,7 @@
               </tr>
               </thead>
               <tbody>
-                @for (c of cycles; track c.id; let i = $index) {
+                @for (c of cyclesFiltres; track c.id; let i = $index) {
                   <tr>
                     <td class="fw-bold text-muted">{{ i + 1 }}</td>
                     <td class="fw-bold text-dark">{{ c.num_act }}</td>
@@ -50,7 +88,7 @@
                   </tr>
                 } @empty {
                   <tr>
-                    <td colspan="8" class="text-muted py-4">لا توجد أي دورات تكوينية مسجلة حالياً.</td>
+                    <td colspan="8" class="text-muted py-4">لا توجد أي دورات تكوينية تطابق البحث حالياً</td>
                   </tr>
                 }
               </tbody>
@@ -64,64 +102,57 @@
 </div>
 
 @if (isFormulaireOuvert) {
-  <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+  <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);" dir="rtl">
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content border-0 shadow-lg">
-
-        <div class="modal-header bg-dark text-white">
+        <div class="modal-header bg-dark text-white d-flex justify-content-between w-100">
           <h5 class="modal-title fw-bold">
             {{ cycleSelectionne.id ? 'تحيين معطيات دورة' : 'إضافة دورة تكوينية جديدة' }}
           </h5>
-          <button (click)="isFormulaireOuvert = false" type="button" class="btn-close btn-close-white"></button>
+          <button (click)="isFormulaireOuvert = false" type="button" class="btn-close btn-close-white m-0"></button>
         </div>
-
         <div class="modal-body p-4">
           <form (ngSubmit)="enregistrer()">
-            <div class="row g-3">
+            <div class="row g-3 text-end">
               <div class="col-md-4">
                 <label class="form-label fw-bold">رقم النشاط (N° Act)</label>
-                <input type="text" [(ngModel)]="cycleSelectionne.num_act" name="num_act" class="form-control bg-light" required>
+                <input type="text" [(ngModel)]="cycleSelectionne.num_act" name="num_act" class="form-control" required>
               </div>
               <div class="col-md-8">
                 <label class="form-label fw-bold">الموضوع / المحور</label>
-                <input type="text" [(ngModel)]="cycleSelectionne.theme" name="theme" class="form-control bg-light" required>
+                <input type="text" [(ngModel)]="cycleSelectionne.theme" name="theme" class="form-control" required>
               </div>
-
               <div class="col-md-6">
                 <label class="form-label fw-bold">تاريخ البداية</label>
-                <input type="date" [(ngModel)]="cycleSelectionne.date_deb" name="date_deb" class="form-control bg-light" required>
+                <input type="date" [(ngModel)]="cycleSelectionne.date_deb" name="date_deb" class="form-control" required>
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold">تاريخ النهاية</label>
-                <input type="date" [(ngModel)]="cycleSelectionne.date_fin" name="date_fin" class="form-control bg-light" required>
+                <input type="date" [(ngModel)]="cycleSelectionne.date_fin" name="date_fin" class="form-control" required>
               </div>
-
               <div class="col-md-4">
                 <label class="form-label fw-bold">المكون 1</label>
-                <input type="text" [(ngModel)]="cycleSelectionne.for1" name="for1" class="form-control bg-light" required>
+                <input type="text" [(ngModel)]="cycleSelectionne.for1" name="for1" class="form-control" required>
               </div>
               <div class="col-md-4">
                 <label class="form-label fw-bold">المكون 2</label>
-                <input type="text" [(ngModel)]="cycleSelectionne.for2" name="for2" class="form-control bg-light">
+                <input type="text" [(ngModel)]="cycleSelectionne.for2" name="for2" class="form-control">
               </div>
               <div class="col-md-4">
                 <label class="form-label fw-bold">المكون 3</label>
-                <input type="text" [(ngModel)]="cycleSelectionne.for3" name="for3" class="form-control bg-light">
+                <input type="text" [(ngModel)]="cycleSelectionne.for3" name="for3" class="form-control">
               </div>
-
-              <div class="col-md-4 mx-auto">
-                <label class="form-label fw-bold text-center d-block">رقم القاعة</label>
-                <input type="number" [(ngModel)]="cycleSelectionne.num_salle" name="num_salle" class="form-control bg-light text-center" required>
+              <div class="col-md-4 mx-auto text-center">
+                <label class="form-label fw-bold">رقم القاعة</label>
+                <input type="number" [(ngModel)]="cycleSelectionne.num_salle" name="num_salle" class="form-control text-center" required>
               </div>
             </div>
-
             <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
               <button type="button" (click)="isFormulaireOuvert = false" class="btn btn-light rounded-pill px-4">إلغاء</button>
               <button type="submit" class="btn btn-success rounded-pill px-5 fw-bold">حفظ الدورة</button>
             </div>
           </form>
         </div>
-
       </div>
     </div>
   </div>

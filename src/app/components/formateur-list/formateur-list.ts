@@ -16,6 +16,13 @@ export class FormateurListComponent implements OnInit {
   formateurSelectionne: FormateurModel = this.reinitialiserFormateur();
   isFormulaireOuvert = false;
 
+  criteresRecherche = {
+    nomPrenom: '',
+    specialite: '',
+    direction: '',
+    entreprise: ''
+  };
+
   constructor(private formateurService: FormateurService) {}
 
   ngOnInit(): void {
@@ -27,6 +34,28 @@ export class FormateurListComponent implements OnInit {
       next: (data) => this.formateurs = data,
       error: (err) => console.error('Erreur lors du chargement des formateurs', err)
     });
+  }
+
+  get formateursFiltres() {
+    return this.formateurs.filter(f => {
+      const matchNom = !this.criteresRecherche.nomPrenom ||
+        (f.nom_prenom && f.nom_prenom.toLowerCase().includes(this.criteresRecherche.nomPrenom.toLowerCase()));
+
+      const matchSpecialite = !this.criteresRecherche.specialite ||
+        (f.specialite && f.specialite.toLowerCase().includes(this.criteresRecherche.specialite.toLowerCase()));
+
+      const matchDirection = !this.criteresRecherche.direction ||
+        (f.direction && f.direction.toLowerCase().includes(this.criteresRecherche.direction.toLowerCase()));
+
+      const matchEntreprise = !this.criteresRecherche.entreprise ||
+        (f.entreprise && f.entreprise.toLowerCase().includes(this.criteresRecherche.entreprise.toLowerCase()));
+
+      return matchNom && matchSpecialite && matchDirection && matchEntreprise;
+    });
+  }
+
+  reinitialiserFiltres(): void {
+    this.criteresRecherche = { nomPrenom: '', specialite: '', direction: '', entreprise: '' };
   }
 
   ouvrirAjout(): void {

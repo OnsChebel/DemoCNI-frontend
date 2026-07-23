@@ -16,6 +16,14 @@ export class CycleListComponent implements OnInit {
   cycleSelectionne: CycleModel = this.reinitialiserCycle();
   isFormulaireOuvert = false;
 
+  criteresRecherche = {
+    theme: '',
+    dateDeb: '',
+    dateFin: '',
+    formateur: '',
+    numSalle: ''
+  };
+
   constructor(private cycleService: CycleService) {}
 
   ngOnInit(): void {
@@ -27,6 +35,33 @@ export class CycleListComponent implements OnInit {
       next: (data) => this.cycles = data,
       error: (err) => console.error('Erreur lors du chargement des cycles', err)
     });
+  }
+
+  get cyclesFiltres() {
+    return this.cycles.filter(c => {
+      const matchTheme = !this.criteresRecherche.theme ||
+        (c.theme && c.theme.toLowerCase().includes(this.criteresRecherche.theme.toLowerCase()));
+
+      const matchDateDeb = !this.criteresRecherche.dateDeb ||
+        (c.date_deb && c.date_deb.includes(this.criteresRecherche.dateDeb));
+
+      const matchDateFin = !this.criteresRecherche.dateFin ||
+        (c.date_fin && c.date_fin.includes(this.criteresRecherche.dateFin));
+
+      const matchFormateur = !this.criteresRecherche.formateur ||
+        ((c.for1 && c.for1.toLowerCase().includes(this.criteresRecherche.formateur.toLowerCase())) ||
+          (c.for2 && c.for2.toLowerCase().includes(this.criteresRecherche.formateur.toLowerCase())) ||
+          (c.for3 && c.for3.toLowerCase().includes(this.criteresRecherche.formateur.toLowerCase())));
+
+      const matchSalle = !this.criteresRecherche.numSalle ||
+        (c.num_salle && c.num_salle.toString() === this.criteresRecherche.numSalle.toString());
+
+      return matchTheme && matchDateDeb && matchDateFin && matchFormateur && matchSalle;
+    });
+  }
+
+  reinitialiserFiltres(): void {
+    this.criteresRecherche = { theme: '', dateDeb: '', dateFin: '', formateur: '', numSalle: '' };
   }
 
   ouvrirAjout(): void {

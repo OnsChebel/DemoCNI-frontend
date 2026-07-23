@@ -1,10 +1,43 @@
-<div class="container py-4">
+<div class="container py-4" dir="rtl">
   <div class="row">
     <div class="col-lg-10 mx-auto">
 
+      <div class="card shadow-sm border-0 mb-4 bg-white p-3">
+        <h6 class="fw-bold text-secondary mb-3"><i class="bi bi-search me-2"></i> البحث عن مكوّن</h6>
+        <div class="row g-3 align-items-end">
+
+          <div class="col-md-3 text-end">
+            <label class="form-label small fw-bold text-muted">الإسم واللقب</label>
+            <input type="text" [(ngModel)]="criteresRecherche.nomPrenom" class="form-control form-control-sm">
+          </div>
+
+          <div class="col-md-3 text-end">
+            <label class="form-label small fw-bold text-muted">الإختصاص</label>
+            <input type="text" [(ngModel)]="criteresRecherche.specialite" class="form-control form-control-sm">
+          </div>
+
+          <div class="col-md-2 text-end">
+            <label class="form-label small fw-bold text-muted">الإدارة</label>
+            <input type="text" [(ngModel)]="criteresRecherche.direction" class="form-control form-control-sm">
+          </div>
+
+          <div class="col-md-2 text-end">
+            <label class="form-label small fw-bold text-muted">المؤسسة</label>
+            <input type="text" [(ngModel)]="criteresRecherche.entreprise" class="form-control form-control-sm">
+          </div>
+
+          <div class="col-md-2">
+            <button (click)="reinitialiserFiltres()" class="btn btn-outline-secondary btn-sm w-100 rounded-pill">
+              <i class="bi bi-arrow-clockwise"></i> Supprimer les filtres
+            </button>
+          </div>
+
+        </div>
+      </div>
+
       <div class="card shadow-sm border-0">
         <div class="card-header bg-success text-white d-flex justify-content-between align-items-center py-3">
-          <h5 class="mb-0 fw-bold"><i class="bi bi-person-badge-fill me-2"></i> قائمة المكونين (Gestion des Formateurs)</h5>
+          <h5 class="mb-0 fw-bold"><i class="bi bi-person-badge-fill me-2"></i> قائمة المكونين</h5>
           <button (click)="ouvrirAjout()" class="btn btn-light btn-sm rounded-pill fw-bold text-success px-3">
             <i class="bi bi-plus-lg"></i> إضافة مكون جديد
           </button>
@@ -24,7 +57,7 @@
               </tr>
               </thead>
               <tbody>
-                @for (f of formateurs; track f.id; let i = $index) {
+                @for (f of formateursFiltres; track f.id; let i = $index) {
                   <tr>
                     <td class="fw-bold text-muted">{{ i + 1 }}</td>
                     <td class="fw-bold text-dark">{{ f.nom_prenom }}</td>
@@ -42,7 +75,7 @@
                   </tr>
                 } @empty {
                   <tr>
-                    <td colspan="6" class="text-muted py-4">لا يوجد أي مكونين حالياً في المنظومة.</td>
+                    <td colspan="6" class="text-muted py-4">لا يوجد أي مكونين يطابقون البحث حالياً</td>
                   </tr>
                 }
               </tbody>
@@ -56,45 +89,41 @@
 </div>
 
 @if (isFormulaireOuvert) {
-  <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+  <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);" dir="rtl">
     <div class="modal-dialog modal-md modal-dialog-centered">
       <div class="modal-content border-0 shadow-lg">
-
-        <div class="modal-header bg-dark text-white">
+        <div class="modal-header bg-dark text-white d-flex justify-content-between w-100">
           <h5 class="modal-title fw-bold">
             {{ formateurSelectionne.id ? 'تحيين معطيات مكون' : 'بطاقة إرشادات / إضافة مكون جديد' }}
           </h5>
-          <button (click)="isFormulaireOuvert = false" type="button" class="btn-close btn-close-white"></button>
+          <button (click)="isFormulaireOuvert = false" type="button" class="btn-close btn-close-white m-0"></button>
         </div>
-
-        <div class="modal-body p-4">
+        <div class="modal-body p-4 text-end">
           <form (ngSubmit)="enregistrer()">
             <div class="row g-3">
               <div class="col-12">
                 <label class="form-label fw-bold">الإسم و اللقب</label>
-                <input type="text" [(ngModel)]="formateurSelectionne.nom_prenom" name="nom_prenom" class="form-control form-control-lg bg-light" required>
+                <input type="text" [(ngModel)]="formateurSelectionne.nom_prenom" name="nom_prenom" class="form-control form-control-lg" required>
               </div>
               <div class="col-12">
                 <label class="form-label fw-bold">الإختصاص</label>
-                <input type="text" [(ngModel)]="formateurSelectionne.specialite" name="specialite" class="form-control form-control-lg bg-light" required>
+                <input type="text" [(ngModel)]="formateurSelectionne.specialite" name="specialite" class="form-control form-control-lg" required>
               </div>
               <div class="col-12">
                 <label class="form-label fw-bold">الإدارة</label>
-                <input type="text" [(ngModel)]="formateurSelectionne.direction" name="direction" class="form-control form-control-lg bg-light">
+                <input type="text" [(ngModel)]="formateurSelectionne.direction" name="direction" class="form-control form-control-lg">
               </div>
               <div class="col-12">
                 <label class="form-label fw-bold">المؤسسة / الشركة</label>
-                <input type="text" [(ngModel)]="formateurSelectionne.entreprise" name="entreprise" class="form-control form-control-lg bg-light">
+                <input type="text" [(ngModel)]="formateurSelectionne.entreprise" name="entreprise" class="form-control form-control-lg">
               </div>
             </div>
-
             <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
               <button type="button" (click)="isFormulaireOuvert = false" class="btn btn-light rounded-pill px-4">إلغاء</button>
               <button type="submit" class="btn btn-success rounded-pill px-5 fw-bold">حفظ البيانات</button>
             </div>
           </form>
         </div>
-
       </div>
     </div>
   </div>
