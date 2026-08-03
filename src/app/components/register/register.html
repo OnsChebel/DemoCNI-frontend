@@ -1,0 +1,65 @@
+<div class="container py-5" dir="rtl">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div class="card border-0 shadow-lg rounded-4">
+        <div class="card-body p-4 p-md-5">
+
+          <div class="text-center mb-4">
+            <i class="bi bi-person-plus-fill text-success display-4"></i>
+            <h4 class="fw-bold mt-2">إنشاء حساب مشارك جديد</h4>
+            <p class="text-muted small">قم بملء المعطيات التالية للتسجيل في المنظومة</p>
+          </div>
+
+          @if (messageSucces) {
+            <div class="alert alert-success text-center py-2">{{ messageSucces }}</div>
+          }
+          @if (messageErreur) {
+            <div class="alert alert-danger text-center py-2">{{ messageErreur }}</div>
+          }
+
+          <form (ngSubmit)="onRegister()">
+            <div class="mb-3 text-end">
+              <label class="form-label small fw-bold">الإسم واللقب</label>
+              <input type="text" [(ngModel)]="participant.nom_prenom" name="nom" class="form-control" required>
+            </div>
+
+            <div class="mb-3 text-end">
+              <label class="form-label small fw-bold">بطاقة التعريف الوطنية (CIN)</label>
+              <input type="number" [(ngModel)]="participant.cin" name="cin" class="form-control" required>
+            </div>
+
+            <div class="mb-3 text-end">
+              <label class="form-label small fw-bold">البريد الإلكتروني</label>
+              <input type="email" [(ngModel)]="participant.mail" name="mail" class="form-control text-start" dir="ltr" required>
+            </div>
+
+            <div class="mb-3 text-end">
+              <label class="form-label small fw-bold">كلمة السر</label>
+              <input type="password" [(ngModel)]="participant.password" name="password" class="form-control text-start" dir="ltr" required>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3 text-end">
+                <label class="form-label small fw-bold">الهاتف الجوال</label>
+                <input type="number" [(ngModel)]="participant.tel_port" name="tel" class="form-control">
+              </div>
+              <div class="col-md-6 mb-3 text-end">
+                <label class="form-label small fw-bold">المؤسسة / الشركة</label>
+                <input type="text" [(ngModel)]="participant.entreprise" name="entreprise" class="form-control">
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100 rounded-pill fw-bold py-2 mt-3">
+              تسجيل الحساب
+            </button>
+          </form>
+
+          <div class="text-center mt-4">
+            <small class="text-muted">لديك حساب بالفعل؟ <a routerLink="/login" class="text-success fw-bold text-decoration-none">تسجيل الدخول</a></small>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

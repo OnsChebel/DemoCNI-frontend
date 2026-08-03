@@ -1,0 +1,119 @@
+<div class="container py-4" dir="rtl">
+
+  <div class="d-flex justify-content-between align-items-center p-4 mb-4 bg-white rounded-3 shadow-sm border-start border-4 border-success">
+    <div>
+      <h3 class="fw-bold text-dark mb-1">
+        <i class="bi bi-journal-check text-success me-2"></i> فضاء المشارك
+      </h3>
+      <p class="text-muted mb-0">مرحباً بك <strong>{{ participantConnecte.nom_prenom }}</strong></p>
+    </div>
+
+    <button (click)="seDeconnecter()" class="btn btn-outline-danger fw-bold rounded-pill px-3">
+      <i class="bi bi-box-arrow-right me-1"></i> تسجيل الخروج
+    </button>
+  </div>
+
+  @if (messageSucces) {
+    <div class="alert alert-success text-center py-2">{{ messageSucces }}</div>
+  }
+
+  @if (messageErreur) {
+    <div class="alert alert-danger text-center py-2">{{ messageErreur }}</div>
+  }
+
+  <h5 class="fw-bold mb-3 text-secondary"><i class="bi bi-grid-fill me-2"></i> الدورات التكوينية المقترحة</h5>
+
+  <div class="row g-4">
+    @for (c of cyclesDisponibles; track c.id) {
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm border-0 rounded-3">
+          <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <span class="badge bg-success">نشاط رقم {{ c.num_act }}</span>
+            <span class="small"><i class="bi bi-door-open me-1"></i> قاعة {{ c.num_salle }}</span>
+          </div>
+
+          <div class="card-body">
+            <h5 class="card-title fw-bold text-success mb-3">{{ c.theme }}</h5>
+            <p class="card-text small text-muted mb-2">
+              <i class="bi bi-calendar-event me-1"></i> <strong>من:</strong> {{ c.date_deb }} <strong>إلى:</strong> {{ c.date_fin }}
+            </p>
+            <div class="small bg-light p-2 rounded mb-3">
+              <strong class="d-block text-secondary mb-1">المكونون:</strong>
+              <div>• {{ c.for1 }}</div>
+              @if (c.for2) { <div>• {{ c.for2 }}</div> }
+              @if (c.for3) { <div>• {{ c.for3 }}</div> }
+            </div>
+          </div>
+
+          <div class="card-footer bg-white border-0 pb-3">
+            @if (estInscritEtConfirme(c.id)) {
+              <div class="d-flex flex-column gap-2">
+                <span class="badge bg-success py-2"><i class="bi bi-check-circle-fill me-1"></i> أنت مسجل حالياً في هذه الدورة</span>
+                <button (click)="annulerInscription(c.id)" class="btn btn-outline-danger btn-sm rounded-pill fw-bold">
+                  <i class="bi bi-x-circle me-1"></i> إلغاء التسجيل
+                </button>
+              </div>
+            } @else {
+              <button (click)="ouvrirModalInscription(c)" class="btn btn-outline-success btn-sm w-100 rounded-pill fw-bold">
+                <i class="bi bi-plus-circle me-1"></i> التسجيل في الدورة
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    } @empty {
+      <div class="col-12 text-center py-5 text-muted">
+        لا توجد دورات تكوينية متاحة حالياً.
+      </div>
+    }
+  </div>
+
+  @if (afficherModal) {
+    <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow">
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-header-title fw-bold m-0">تأكيد التسجيل وتكميل المعطيات</h5>
+            <button type="button" class="btn-close btn-close-white" (click)="fermerModal()"></button>
+          </div>
+
+          <div class="modal-body p-4 text-end">
+            <p class="text-muted small mb-3">يرجى التثبت من المعطيات وتكملة الهاتف القار والفاكس إن وجد :</p>
+
+            <div class="mb-2">
+              <label class="form-label small fw-bold text-muted">الإسم واللقب</label>
+              <input type="text" [value]="participantConnecte.nom_prenom" class="form-control bg-light" disabled>
+            </div>
+
+            <div class="mb-2">
+              <label class="form-label small fw-bold text-muted">بطاقة التعريف (CIN)</label>
+              <input type="text" [value]="participantConnecte.cin" class="form-control bg-light" disabled>
+            </div>
+
+            <div class="mb-2">
+              <label class="form-label small fw-bold text-muted">المؤسسة / الشركة</label>
+              <input type="text" [value]="participantConnecte.entreprise" class="form-control bg-light" disabled>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-6 mb-2">
+                <label class="form-label small fw-bold text-dark">الهاتف القار (Tel Fixe)</label>
+                <input type="number" [(ngModel)]="formComplement.tel_fix" class="form-control">
+              </div>
+              <div class="col-6 mb-2">
+                <label class="form-label small fw-bold text-dark">الفاكس (Fax)</label>
+                <input type="text" [(ngModel)]="formComplement.fax" class="form-control">
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer border-0 p-3 bg-light d-flex justify-content-between">
+            <button type="button" class="btn btn-secondary rounded-pill px-4" (click)="fermerModal()">إلغاء</button>
+            <button type="button" class="btn btn-success rounded-pill px-4 fw-bold" (click)="validerInscription()">حفظ وتأكيد التسجيل</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+</div>
