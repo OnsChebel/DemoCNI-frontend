@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ParticipantModel } from '../../models/participant.model';
+import {InscriptionInfo, ParticipantModel} from '../../models/participant.model';
 import { ParticipantService } from '../../services/participant.service';
 
 @Component({
@@ -17,6 +17,8 @@ export class ParticipantListComponent implements OnInit {
   participantSelectionne: ParticipantModel = this.reinitialiserParticipant();
   isFormulaireOuvert = false;
 
+  formationsAffichees: InscriptionInfo[] = [];
+  isModalFormationsOuverte = false;
 
   criteresRecherche = {
     theme: '',
@@ -42,16 +44,14 @@ export class ParticipantListComponent implements OnInit {
 
   get participantsFiltres() {
     return this.participants.filter(p => {
-
       const matchTheme = !this.criteresRecherche.theme ||
-        (p.theme_part && p.theme_part.toLowerCase().includes(this.criteresRecherche.theme.toLowerCase()));
-
+        (p.formations && p.formations.some(f => f.theme.toLowerCase().includes(this.criteresRecherche.theme.toLowerCase())));
 
       const matchDate = !this.criteresRecherche.dateDebut ||
-        (p.date_debut && p.date_debut.includes(this.criteresRecherche.dateDebut));
+        (p.formations && p.formations.some(f => f.dateDebut && f.dateDebut.includes(this.criteresRecherche.dateDebut)));
 
       const matchSalle = !this.criteresRecherche.numSalle ||
-        (p.num_salle && p.num_salle.toString() === this.criteresRecherche.numSalle.toString());
+        (p.formations && p.formations.some(f => f.numSalle && f.numSalle.toString() === this.criteresRecherche.numSalle.toString()));
 
       return matchTheme && matchDate && matchSalle;
     });
@@ -101,11 +101,20 @@ export class ParticipantListComponent implements OnInit {
     }
   }
 
+  afficherFormations(formations: InscriptionInfo[] = []): void {
+    this.formationsAffichees = formations;
+    this.isModalFormationsOuverte = true;
+  }
+
+  fermerModalFormations(): void {
+    this.isModalFormationsOuverte = false;
+    this.formationsAffichees = [];
+  }
 
   private reinitialiserParticipant(): ParticipantModel {
     return {
       nom_prenom: '',
-      cin: 0,
+      cin: '',
       entreprise: '',
       tel_fix: 0,
       fax: '',

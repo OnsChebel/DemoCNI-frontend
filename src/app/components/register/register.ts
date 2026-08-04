@@ -13,7 +13,7 @@ import { HttpClient } from '@angular/common/http';
 export class RegisterComponent {
   participant = {
     nom_prenom: '',
-    cin: null,
+    cin: '',
     mail: '',
     password: '',
     tel_port: null,

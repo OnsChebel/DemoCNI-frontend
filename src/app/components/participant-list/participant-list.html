@@ -2,6 +2,7 @@
   <div class="row">
     <div class="col-lg-12 mx-auto">
 
+      <!-- Filtres de recherche -->
       <div class="card shadow-sm border-0 mb-4 bg-white p-3">
         <h6 class="fw-bold text-secondary mb-3"><i class="bi bi-search me-2"></i> البحث</h6>
         <div class="row g-3 align-items-end">
@@ -30,6 +31,7 @@
         </div>
       </div>
 
+      <!-- Liste des participants -->
       <div class="card shadow-sm border-0">
         <div class="card-header bg-success text-white d-flex justify-content-between align-items-center py-3">
           <h5 class="mb-0 fw-bold"><i class="bi bi-people-fill me-2"></i> قائمة المشاركين</h5>
@@ -47,9 +49,7 @@
                 <th scope="col">الإسم واللقب</th>
                 <th scope="col">بطاقة التعريف (CIN)</th>
                 <th scope="col">المؤسسة / الشركة</th>
-                <th scope="col">الموضوع (Thème)</th>
-                <th scope="col">تاريخ البدء</th>
-                <th scope="col">رقم القاعة</th>
+                <th scope="col">الدورات التكوينية</th>
                 <th scope="col">الهاتف الجوال</th>
                 <th scope="col">الإجراءات</th>
               </tr>
@@ -61,9 +61,23 @@
                     <td class="fw-bold text-dark">{{ p.nom_prenom }}</td>
                     <td><span class="badge bg-light text-dark border">{{ p.cin }}</span></td>
                     <td>{{ p.entreprise }}</td>
-                    <td class="text-primary fw-bold">{{ p.theme_part }}</td>
-                    <td><span class="badge bg-light text-secondary border">{{ p.date_debut }}</span></td>
-                    <td><span class="badge bg-success-subtle text-success">قاعة {{ p.num_salle }}</span></td>
+
+                    <!-- Colonne des formations avec bouton Popup -->
+                    <td>
+                      @if (p.formations && p.formations.length > 0) {
+                        <div class="d-flex align-items-center justify-content-center gap-1">
+                          <span class="badge bg-success me-1">{{ p.formations[0].theme }}</span>
+                          @if (p.formations.length > 1) {
+                            <span class="badge bg-dark">+{{ p.formations.length - 1 }}</span>
+                          }
+                          <button (click)="afficherFormations(p.formations)" class="btn btn-sm btn-outline-info rounded-circle ms-1" title="عرض التفاصيل">
+                            <i class="bi bi-eye-fill"></i>
+                          </button>
+                        </div>
+                      } @else {
+                        <span class="badge bg-secondary">غير مسجل في أي دورة</span>
+                      }
+                    </td>
 
                     <td>{{ p.tel_port }}</td>
                     <td>
@@ -77,7 +91,7 @@
                   </tr>
                 } @empty {
                   <tr>
-                    <td colspan="9" class="text-muted py-4">لا يوجد أي مشاركين يطابقون البحث حالياً</td>
+                    <td colspan="7" class="text-muted py-4">لا يوجد أي مشاركين يطابقون البحث حالياً</td>
                   </tr>
                 }
               </tbody>
@@ -90,10 +104,48 @@
   </div>
 </div>
 
+<!-- Affichage des formations d'un participant -->
+@if (isModalFormationsOuverte) {
+  <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);" dir="rtl">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg rounded-4">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title fw-bold"><i class="bi bi-journal-bookmark-fill me-2"></i> الدورات التكوينية المسجل فيها</h5>
+          <button (click)="fermerModalFormations()" type="button" class="btn-close btn-close-white m-0"></button>
+        </div>
+        <div class="modal-body p-4">
+          <table class="table table-bordered text-center align-middle mb-0">
+            <thead class="table-light">
+            <tr>
+              <th>موضوع التدريب</th>
+              <th>تاريخ البدء</th>
+              <th>القاعة</th>
+            </tr>
+            </thead>
+            <tbody>
+              @for (f of formationsAffichees; track f.theme) {
+                <tr>
+                  <td class="fw-bold text-success">{{ f.theme }}</td>
+                  <td><span class="badge bg-light text-dark border">{{ f.dateDebut }}</span></td>
+                  <td><span class="badge bg-info-subtle text-info-emphasis">قاعة {{ f.numSalle }}</span></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer border-0 bg-light">
+          <button (click)="fermerModalFormations()" type="button" class="btn btn-secondary rounded-pill px-4">إغلاق</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Formulaire d'ajout / modification de participant -->
 @if (isFormulaireOuvert) {
   <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);" dir="rtl">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content border-0 shadow-lg">
+      <div class="modal-content border-0 shadow-lg rounded-4">
 
         <div class="modal-header bg-dark text-white text-end d-flex justify-content-between w-100">
           <h5 class="modal-title fw-bold">
@@ -111,7 +163,7 @@
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold">بطاقة التعريف الوطنية</label>
-                <input type="number" [(ngModel)]="participantSelectionne.cin" name="cin" class="form-control" required>
+                <input type="text" [(ngModel)]="participantSelectionne.cin" name="cin" class="form-control" required>
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold">المؤسسة</label>
@@ -134,17 +186,18 @@
                 <input type="text" [(ngModel)]="participantSelectionne.fax" name="fax" class="form-control">
               </div>
 
+              <!-- 👈 RESTAURATION DES CHAMPS DE LA FORMATION -->
               <div class="col-md-6">
                 <label class="form-label fw-bold text-success">موضوع التدريب (Thème)</label>
-                <input type="text" [(ngModel)]="participantSelectionne.theme_part" name="theme_part" class="form-control" placeholder="مثال: Angular" required>
+                <input type="text" [(ngModel)]="participantSelectionne.theme_part" name="theme_part" class="form-control" placeholder="مثال: Angular">
               </div>
               <div class="col-md-3">
                 <label class="form-label fw-bold text-success">تاريخ البدء</label>
-                <input type="date" [(ngModel)]="participantSelectionne.date_debut" name="date_debut" class="form-control" required>
+                <input type="date" [(ngModel)]="participantSelectionne.date_debut" name="date_debut" class="form-control">
               </div>
               <div class="col-md-3">
                 <label class="form-label fw-bold text-success">رقم القاعة</label>
-                <input type="number" [(ngModel)]="participantSelectionne.num_salle" name="num_salle" class="form-control" required>
+                <input type="number" [(ngModel)]="participantSelectionne.num_salle" name="num_salle" class="form-control">
               </div>
             </div>
 
