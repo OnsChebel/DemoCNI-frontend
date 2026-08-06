@@ -1,0 +1,150 @@
+<div class="container py-4" dir="rtl">
+
+  <!-- Premier changement de mot de passe -->
+  @if (formateurConnecte && formateurConnecte.isFirstLogin) {
+    <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.7);" dir="rtl">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+          <div class="modal-header bg-warning text-dark">
+            <h5 class="modal-title fw-bold"><i class="bi bi-shield-lock-fill me-2"></i> تغيير كلمة السر المبدئية</h5>
+          </div>
+          <div class="modal-body p-4 text-end">
+            <p class="text-muted small">مرحباً بك! لحماية حسابك، يرجى تغيير كلمة السر المبدئية التي مكنك منها المشرف قبل المتابعة.</p>
+
+            @if (erreurPassword) {
+              <div class="alert alert-danger py-2 text-center">{{ erreurPassword }}</div>
+            }
+            @if (messageSuccesPassword) {
+              <div class="alert alert-success py-2 text-center">{{ messageSuccesPassword }}</div>
+            }
+
+            <div class="mb-3">
+              <label class="form-label fw-bold small">كلمة السر الحالية (المبدئية)</label>
+              <input type="password" [(ngModel)]="passwords.ancienPassword" class="form-control" dir="ltr">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold small">كلمة السر الجديدة</label>
+              <input type="password" [(ngModel)]="passwords.nouveauPassword" class="form-control" dir="ltr">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold small">تأكيد كلمة السر الجديدة</label>
+              <input type="password" [(ngModel)]="passwords.confirmation" class="form-control" dir="ltr">
+            </div>
+          </div>
+          <div class="modal-footer border-0 bg-light">
+            <button (click)="validerChangementMotDePasse()" class="btn btn-success w-100 rounded-pill fw-bold">تأكيد وتغيير</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Tableau de bord du formateur -->
+  @if (formateurConnecte && !formateurConnecte.isFirstLogin) {
+    <div class="d-flex justify-content-between align-items-center p-4 mb-4 bg-white rounded-3 shadow-sm border-start border-4 border-success">
+      <div>
+        <h3 class="fw-bold text-dark mb-1">
+          <i class="bi bi-journal-bookmark-fill text-success me-2"></i> جدول الدورات التكوينية
+        </h3>
+        <p class="text-muted mb-0">مرحباً بك السيد(ة) <strong>{{ formateurConnecte.nom_prenom }}</strong></p>
+      </div>
+      <button (click)="seDeconnecter()" class="btn btn-outline-danger fw-bold rounded-pill px-3">
+        <i class="bi bi-box-arrow-right me-1"></i> تسجيل الخروج
+      </button>
+    </div>
+
+    <!-- Cycles attribués -->
+    <div class="row g-4">
+      @for (c of mesCycles; track c.id) {
+        <div class="col-md-6 col-lg-4">
+          <div class="card h-100 shadow-sm border-0 rounded-3">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+              <span class="badge bg-success">نشاط رقم {{ c.num_act }}</span>
+              <span class="small"><i class="bi bi-door-open me-1"></i> قاعة {{ c.num_salle }}</span>
+            </div>
+            <div class="card-body text-end">
+              <h5 class="card-title fw-bold text-success mb-3">{{ c.theme }}</h5>
+              <p class="card-text small text-muted mb-2">
+                <i class="bi bi-calendar-event me-1"></i> <strong>من:</strong> {{ c.date_deb }} <strong>إلى:</strong> {{ c.date_fin }}
+              </p>
+              <div class="small bg-light p-2 rounded mb-2">
+                <strong class="d-block text-secondary mb-1">فريق التدريب:</strong>
+                <div>• {{ c.for1 }}</div>
+                @if (c.for2) { <div>• {{ c.for2 }}</div> }
+                @if (c.for3) { <div>• {{ c.for3 }}</div> }
+              </div>
+            </div>
+            <div class="card-footer bg-white border-0 pb-3">
+              <button (click)="ouvrirModalParticipants(c)" class="btn btn-outline-success btn-sm w-100 rounded-pill fw-bold">
+                <i class="bi bi-people-fill me-1"></i> قائمة المشاركين والحضور
+              </button>
+            </div>
+          </div>
+        </div>
+      } @empty {
+        <div class="col-12 text-center py-5 text-muted">
+          لا توجد دورات تكوينية مسندة إليك حالياً.
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Affichage des participants -->
+  @if (afficherModalParticipants && cycleSelectionne) {
+  <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);" dir="rtl">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg rounded-4">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title fw-bold">
+            <i class="bi bi-people-fill me-2"></i> قائمة المشاركين - {{ cycleSelectionne.theme }}
+          </h5>
+          <button (click)="fermerModalParticipants()" type="button" class="btn-close btn-close-white m-0"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="alert alert-light border d-flex justify-content-between align-items-center mb-3">
+            <span><strong>القاعة:</strong> {{ cycleSelectionne.num_salle }}</span>
+            <span><strong>تاريخ البدء:</strong> {{ cycleSelectionne.date_deb }}</span>
+          </div>
+
+          <!-- Tableau des participants -->
+          @if (cycleSelectionne.participants && cycleSelectionne.participants.length > 0) {
+            <div class="table-responsive">
+              <table class="table table-hover table-striped align-middle text-center border">
+                <thead class="table-dark">
+                <tr>
+                  <th>#</th>
+                  <th>الاسم واللقب</th>
+                  <th>البريد الإلكتروني</th>
+                  <th>رقم الهاتف</th>
+                  <th>المؤسسة</th>
+                </tr>
+                </thead>
+                <tbody>
+                  @for (p of cycleSelectionne.participants; track p.id; let i = $index) {
+                    <tr>
+                      <td>{{ i + 1 }}</td>
+                      <td class="fw-bold">{{ p.nom_prenom }}</td>
+                      <td>{{ p.mail }}</td>
+                      <td>{{ p.tel_port }}</td>
+                      <td><span class="badge bg-secondary">{{ p.entreprise }}</span></td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          } @else {
+            <div class="alert alert-info text-center py-4 mb-0">
+              <i class="bi bi-info-circle fs-4 d-block mb-2"></i>
+              لا يوجد مشاركون مسجلون (أو مؤكدون) في هذه الدورة حالياً.
+            </div>
+          }
+        </div>
+        <div class="modal-footer border-0 bg-light d-flex justify-content-between">
+          <button (click)="fermerModalParticipants()" class="btn btn-secondary rounded-pill px-4">إغلاق</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+</div>

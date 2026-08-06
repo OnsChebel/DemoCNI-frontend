@@ -36,8 +36,18 @@ export class LoginComponent {
           const userObj = response.user || { id: response.id, mail: this.username, role: response.role };
           localStorage.setItem('currentUser', JSON.stringify(userObj));
 
-          if (response.role === 'PARTICIPANT' || userObj.role === 'PARTICIPANT') {
+          if (response.role === 'FORMATEUR') {
+            const formateurSession = {
+              id: response.user.id,
+              nom_prenom: response.user.nom_prenom,
+              isFirstLogin: response.user.isFirstLogin
+            };
+            localStorage.setItem('formateurSession', JSON.stringify(formateurSession));
+            this.router.navigate(['/espace-formateur']);
+
+          } else if (response.role === 'PARTICIPANT' || userObj.role === 'PARTICIPANT') {
             this.router.navigate(['/participant-dashboard']);
+
           } else {
             this.router.navigate(['/menu']);
           }

@@ -1,8 +1,17 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const token = localStorage.getItem('token');
+  const publicUrls = [
+    '/api/auth/login'
+  ];
 
+  const isPublicRoute = publicUrls.some(url => req.url.includes(url));
+
+  if (isPublicRoute) {
+    return next(req);
+  }
+
+  const token = localStorage.getItem('token');
   if (token) {
     const clonedRequest = req.clone({
       setHeaders: {

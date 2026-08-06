@@ -98,6 +98,7 @@ export class FormateurListComponent implements OnInit {
   }
 
   private reinitialiserFormateur(): FormateurModel {
-    return { nom_prenom: '', specialite: '', direction: '', entreprise: '' };
+    return { nom_prenom: '', specialite: '', direction: '', entreprise: '', login: '',
+      password: '' };
   }
 }

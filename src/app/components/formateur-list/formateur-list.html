@@ -90,11 +90,11 @@
   </div>
 </div>
 
-<!-- Ajouter /modifier un formateur -->
+<!-- Ajouter / modifier un formateur -->
 @if (isFormulaireOuvert) {
   <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);" dir="rtl">
-    <div class="modal-dialog modal-md modal-dialog-centered">
-      <div class="modal-content border-0 shadow-lg">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg rounded-4">
         <div class="modal-header bg-dark text-white d-flex justify-content-between w-100">
           <h5 class="modal-title fw-bold">
             {{ formateurSelectionne.id ? 'تحيين معطيات مكون' : 'بطاقة إرشادات / إضافة مكون جديد' }}
@@ -104,23 +104,34 @@
         <div class="modal-body p-4 text-end">
           <form (ngSubmit)="enregistrer()">
             <div class="row g-3">
-              <div class="col-12">
+              <div class="col-md-6">
                 <label class="form-label fw-bold">الإسم و اللقب</label>
-                <input type="text" [(ngModel)]="formateurSelectionne.nom_prenom" name="nom_prenom" class="form-control form-control-lg" required>
+                <input type="text" [(ngModel)]="formateurSelectionne.nom_prenom" name="nom_prenom" class="form-control" required>
               </div>
-              <div class="col-12">
+              <div class="col-md-6">
                 <label class="form-label fw-bold">الإختصاص</label>
-                <input type="text" [(ngModel)]="formateurSelectionne.specialite" name="specialite" class="form-control form-control-lg" required>
+                <input type="text" [(ngModel)]="formateurSelectionne.specialite" name="specialite" class="form-control" required>
               </div>
-              <div class="col-12">
+              <div class="col-md-6">
                 <label class="form-label fw-bold">الإدارة</label>
-                <input type="text" [(ngModel)]="formateurSelectionne.direction" name="direction" class="form-control form-control-lg">
+                <input type="text" [(ngModel)]="formateurSelectionne.direction" name="direction" class="form-control">
               </div>
-              <div class="col-12">
+              <div class="col-md-6">
                 <label class="form-label fw-bold">المؤسسة / الشركة</label>
-                <input type="text" [(ngModel)]="formateurSelectionne.entreprise" name="entreprise" class="form-control form-control-lg">
+                <input type="text" [(ngModel)]="formateurSelectionne.entreprise" name="entreprise" class="form-control">
+              </div>
+
+              <!-- CHAMPS ACCÈS COMPTE (LOGIN / MOT DE PASSE TEMPORAIRE) -->
+              <div class="col-md-6">
+                <label class="form-label fw-bold text-success">اسم المستخدم (Login)</label>
+                <input type="text" [(ngModel)]="formateurSelectionne.login" name="login" class="form-control text-start" dir="ltr" required placeholder="ex: f.benali">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold text-success">كلمة السر المبدئية</label>
+                <input type="text" [(ngModel)]="formateurSelectionne.password" name="password" class="form-control text-start" dir="ltr" [required]="!formateurSelectionne.id" placeholder="ex: Formateur123*">
               </div>
             </div>
+
             <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
               <button type="button" (click)="isFormulaireOuvert = false" class="btn btn-light rounded-pill px-4">إلغاء</button>
               <button type="submit" class="btn btn-success rounded-pill px-5 fw-bold">حفظ البيانات</button>

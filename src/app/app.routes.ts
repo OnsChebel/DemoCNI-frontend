@@ -6,6 +6,7 @@ import {FormateurListComponent} from './components/formateur-list/formateur-list
 import {CycleListComponent} from './components/cycle-list/cycle-list';
 import {RegisterComponent} from './components/register/register';
 import {EspaceParticipantComponent} from './components/espace-participant/espace-participant';
+import {EspaceFormateurComponent} from './components/espace-formateur/espace-formateur';
 
 export const routes: Routes = [
   {path: '', component: LoginComponent},
@@ -15,5 +16,6 @@ export const routes: Routes = [
   {path: 'formateurs', component: FormateurListComponent},
   {path: 'cycles', component: CycleListComponent},
   { path: 'register', component: RegisterComponent },
-  { path: 'participant-dashboard', component: EspaceParticipantComponent }
+  { path: 'participant-dashboard', component: EspaceParticipantComponent },
+  {path: 'espace-formateur', component: EspaceFormateurComponent}
 ];
