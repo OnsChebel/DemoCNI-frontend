@@ -23,6 +23,8 @@ export class FormateurListComponent implements OnInit {
     entreprise: ''
   };
 
+  isResettingPassword = false;
+
   constructor(private formateurService: FormateurService) {}
 
   ngOnInit(): void {
@@ -60,12 +62,24 @@ export class FormateurListComponent implements OnInit {
 
   ouvrirAjout(): void {
     this.formateurSelectionne = this.reinitialiserFormateur();
+    this.isResettingPassword = true;
     this.isFormulaireOuvert = true;
   }
 
   ouvrirModification(formateur: FormateurModel): void {
-    this.formateurSelectionne = { ...formateur };
+    this.formateurSelectionne = { ...formateur, password: '' };
+    this.isResettingPassword = false;
     this.isFormulaireOuvert = true;
+  }
+
+  activerReinitialisationPassword(): void {
+    this.isResettingPassword = true;
+    this.formateurSelectionne.password = '';
+  }
+
+  annulerReinitialisationPassword(): void {
+    this.isResettingPassword = false;
+    this.formateurSelectionne.password = '';
   }
 
   enregistrer(): void {
@@ -99,6 +113,6 @@ export class FormateurListComponent implements OnInit {
 
   private reinitialiserFormateur(): FormateurModel {
     return { nom_prenom: '', specialite: '', direction: '', entreprise: '', login: '',
-      password: '' };
+      password: '', isFirstLogin: true };
   }
 }

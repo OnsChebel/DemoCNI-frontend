@@ -121,14 +121,60 @@
                 <input type="text" [(ngModel)]="formateurSelectionne.entreprise" name="entreprise" class="form-control">
               </div>
 
-              <!-- CHAMPS ACCÈS COMPTE (LOGIN / MOT DE PASSE TEMPORAIRE) -->
+              <!-- Champs accés compte -->
               <div class="col-md-6">
-                <label class="form-label fw-bold text-success">اسم المستخدم (Login)</label>
-                <input type="text" [(ngModel)]="formateurSelectionne.login" name="login" class="form-control text-start" dir="ltr" required placeholder="ex: f.benali">
+                <label class="form-label fw-bold">اسم المستخدم (Login)</label>
+                <input type="text"
+                       [(ngModel)]="formateurSelectionne.login"
+                       name="login"
+                       class="form-control text-start"
+                       dir="ltr"
+                       required>
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold text-success">كلمة السر المبدئية</label>
-                <input type="text" [(ngModel)]="formateurSelectionne.password" name="password" class="form-control text-start" dir="ltr" [required]="!formateurSelectionne.id" placeholder="ex: Formateur123*">
+
+                @if (!formateurSelectionne.id || isResettingPassword) {
+                  <!-- Cas 1 : Nouvel ajout ou Admin en train de réinitialiser le mot de passe -->
+                  <div class="input-group">
+                    <input type="text"
+                           [(ngModel)]="formateurSelectionne.password"
+                           name="password"
+                           class="form-control text-start"
+                           dir="ltr"
+                           placeholder="أدخل كلمة السر المبدئية الجديدة"
+                           required>
+
+                    @if (formateurSelectionne.id) {
+                      <button type="button" class="btn btn-outline-secondary" (click)="annulerReinitialisationPassword()">
+                        إلغاء
+                      </button>
+                    }
+                  </div>
+                } @else if (formateurSelectionne.isFirstLogin) {
+                  <!-- Cas 2 : Formateur n'a pas encore fait sa 1ère connexion -->
+                  <div class="input-group">
+                    <input type="password"
+                           value="********"
+                           class="form-control text-start"
+                           dir="ltr"
+                           disabled>
+                    <button type="button" class="btn btn-warning fw-bold" (click)="activerReinitialisationPassword()">
+                      <i class="bi bi-key-fill me-1"></i> إعادة تعيين
+                    </button>
+                  </div>
+                  <small class="text-muted">لم يقم المكون بتسجيل الدخول بعد. يمكنك إعادة تعيين كلمة السر المبدئية.</small>
+                } @else {
+                  <!-- Cas 3 : Formateur a déjà fait sa 1ère connexion -->
+                  <input type="text"
+                         class="form-control text-start bg-light"
+                         dir="ltr"
+                         disabled
+                         placeholder="قام المكون بتغيير كلمة السر الخاصة به">
+                  <small class="text-success fw-bold">
+                    <i class="bi bi-check-circle-fill me-1"></i> الحساب مفعل ومؤمن من قبل المكون
+                  </small>
+                }
               </div>
             </div>
 
