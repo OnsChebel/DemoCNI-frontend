@@ -99,6 +99,13 @@
         </div>
       </div>
 
+      <!-- Accès aux archives -->
+      <div class="text-center mt-4">
+        <button (click)="toggleArchives()" class="btn btn-outline-secondary rounded-pill px-4 fw-bold shadow-sm">
+          <i class="bi me-2" [ngClass]="afficherArchives ? 'bi-calendar-check' : 'bi-archive'"></i>
+          {{ afficherArchives ? 'الرجوع إلى الدورات الحالية والمقبلة' : 'عرض أرشيف الدورات السابقة' }}
+        </button>
+      </div>
     </div>
   </div>
 </div>

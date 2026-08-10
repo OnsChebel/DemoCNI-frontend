@@ -24,6 +24,7 @@ export class EspaceFormateurComponent implements OnInit {
   mesCycles: any[] = [];
   cycleSelectionne: any = null;
   afficherModalParticipants = false;
+  afficherArchives = false;
 
   constructor(private formateurService: FormateurService, private router: Router) {}
 
@@ -40,18 +41,6 @@ export class EspaceFormateurComponent implements OnInit {
     }
   }
 
-  seConnecter(): void {
-    this.formateurService.login(this.credentials).subscribe({
-      next: (res) => {
-        this.formateurConnecte = res;
-        localStorage.setItem('formateurSession', JSON.stringify(res));
-        if (!res.isFirstLogin) {
-          this.chargerMesCycles();
-        }
-      },
-      error: () => alert('اسم المستخدم أو كلمة السر غير صحيحة')
-    });
-  }
 
   seDeconnecter(): void {
     localStorage.clear();
@@ -101,6 +90,18 @@ export class EspaceFormateurComponent implements OnInit {
         error: (err) => console.error(err)
       });
     }
+  }
+
+  toggleArchives(): void {
+    this.afficherArchives = !this.afficherArchives;
+  }
+
+  get mesCyclesAffiches(): any[] {
+    const today = new Date().toISOString().split('T')[0];
+    return this.mesCycles.filter(c => {
+      if (!c.date_fin) return false;
+      return this.afficherArchives ? (c.date_fin < today) : (c.date_fin >= today);
+    });
   }
 
   ouvrirModalParticipants(cycle: any): void {

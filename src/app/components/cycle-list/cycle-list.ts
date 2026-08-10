@@ -15,6 +15,7 @@ export class CycleListComponent implements OnInit {
   cycles: CycleModel[] = [];
   cycleSelectionne: CycleModel = this.reinitialiserCycle();
   isFormulaireOuvert = false;
+  afficherArchives = false;
 
   criteresRecherche = {
     theme: '',
@@ -37,8 +38,21 @@ export class CycleListComponent implements OnInit {
     });
   }
 
+  toggleArchives(): void {
+    this.afficherArchives = !this.afficherArchives;
+  }
+
   get cyclesFiltres() {
+    const today = new Date().toISOString().split('T')[0];
+
     return this.cycles.filter(c => {
+      if (!c.date_fin) return false;
+
+      const estArchive = c.date_fin < today;
+      if (this.afficherArchives !== estArchive) {
+        return false;
+      }
+
       const matchTheme = !this.criteresRecherche.theme ||
         (c.theme && c.theme.toLowerCase().includes(this.criteresRecherche.theme.toLowerCase()));
 

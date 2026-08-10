@@ -15,6 +15,7 @@ export class EspaceParticipantComponent implements OnInit {
   cyclesDisponibles: any[] = [];
   mesInscriptions: any[] = [];
   participantConnecte: any = {};
+  afficherArchives = false;
 
   cycleSelectionne: any = null;
   formComplement = {
@@ -63,6 +64,18 @@ export class EspaceParticipantComponent implements OnInit {
     localStorage.removeItem('token');
     localStorage.removeItem('currentUser');
     this.router.navigate(['/login']);
+  }
+
+  toggleArchives(): void {
+    this.afficherArchives = !this.afficherArchives;
+  }
+
+  get cyclesAffiches(): any[] {
+    const today = new Date().toISOString().split('T')[0];
+    return this.cyclesDisponibles.filter(c => {
+      if (!c.date_fin) return false;
+      return this.afficherArchives ? (c.date_fin < today) : (c.date_fin >= today);
+    });
   }
 
   ouvrirModalInscription(cycle: any): void {
