@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CycleService } from '../../services/cycle.service';
 import { InscriptionService } from '../../services/inscription.service';
+import {ChatbotComponent} from '../chatbot/chatbot';
 
 @Component({
   selector: 'app-espace-participant',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,ChatbotComponent],
   templateUrl: './espace-participant.html'
 })
 export class EspaceParticipantComponent implements OnInit {
